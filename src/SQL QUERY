@@ -1,0 +1,1 @@
+SELECT u.name, SUM(IF(u.id=up.users_id, up.balance,0)) as total_summ  FROM users u LEFT JOIN users_phones up on u.id = up.users_id group by u.id;
