@@ -16,7 +16,7 @@ class DefaultController  extends AbstractController
     /**
      * @var EntityManagerInterface
      */
-    private EntityManagerInterface $entityManager;
+    private  $entityManager;
     /**
      * @var mixed
      */
@@ -25,7 +25,7 @@ class DefaultController  extends AbstractController
     {
         $this->entityManager = $entityManager;
     }
-       public array $codeCountry = ['380',];
+       public  $codeCountry = ['380',];
 
     /**
      * @Route ("/", name="home")
