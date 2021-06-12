@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Service;
 
@@ -45,12 +45,6 @@ class UserService
             $arrPhones[] = '+'.$phones->getCodeCountry().$phones->getCodeOperator().$phones->getPhone();
         endforeach;
 
-
-
-//        if (!$order) {
-//            $order = new Order();
-//        }
-
         return [
             'name' =>$user->getName(),
             'year_birhtday' => $user->getBirthDay()->format('Y'),
@@ -58,32 +52,56 @@ class UserService
         ];
     }
 
-//    public function add(Product $product, int $count, ?User $user): Order
-//    {
-//        $order = $this->getOrder();
-//        $existingItem = null;
-//
-//        foreach ($order->getItems() as $item) {
-//            if ($item->getProduct() === $product) {
-//                $existingItem = $item;
-//                break;
-//            }
-//        }
-//
-//        if ($existingItem) {
-//            $newCount = $existingItem->getCount() + $count;
-//            $existingItem->setCount($newCount);
-//        } else {
-//            $existingItem = new OrderItem();
-//            $existingItem->setProduct($product);
-//            $existingItem->setCount($count);
-//            $order->addItem($existingItem);
-//        }
-//
-//        $this->save($order, $user);
-//
-//        return $order;
-//    }
+    public function addUser(\stdClass $userItem)
+    {
+        $user= new Users();
+
+        $user->setName($userItem->name);
+        $user->setBirthDay(new \DateTime($userItem->date));
+
+
+
+        foreach ($userItem->phones as $phonesItem) {
+            $usersPhones = new UsersPhones();
+
+            if (isset ($phonesItem->phoneNumber) && $phonesItem->phoneNumber!=='') {
+                $existingItem = $this->processPhone($phonesItem->phoneNumber);
+                $usersPhones->setCodeCountry($existingItem[0]);
+                $usersPhones->setCodeOperator(intval($existingItem[1]));
+                $usersPhones->setPhone(intval($existingItem[2]));
+            }
+
+            if (isset($phonesItem->balance) && $phonesItem->balance!=='') {
+                $usersPhones->setBalance(intval(($phonesItem->balance*100)));
+            }
+
+            $user->addUsersPhone($usersPhones);
+            $this->entityManager->persist($usersPhones);
+        }
+
+        $this->entityManager->flush();
+
+        return true;
+    }
+
+    public function processPhone($phone) {
+
+        $phones = array();
+       //clear phone number
+        $temp_phone = str_replace(array(' ', '-', '(', ')', '+'), "", $phone);
+
+        //get country code
+        $temp_phone = substr($temp_phone, 0,3);
+        array_push($phones, $temp_phone);
+
+        //get operator code
+        $temp_phone = substr($phone, 4,2);
+        array_push($phones, $temp_phone);
+        //get number
+        $temp_phone = substr($phone,6);
+        array_push($phones, $temp_phone);
+        return $phones;
+    }
 //
 //    public function save(Order $order, ?User $user = null)
 //    {
@@ -95,34 +113,7 @@ class UserService
 //
 //        $this->sessions->set(self::SESSION_KEY, $order->getId());
 //    }
-//
-//    public function deleteItem(OrderItem $item)
-//    {
-//        $order = $item->getCart();
-//        $order->removeItem($item);
-//        $this->entityManager->remove($item);
-//        $this->save($order);
-//    }
-//
-//    public function makeOrder(Order $order)
-//    {
-//        $order->setOrderedAt(new \DateTime());
-//        $this->save($order);
-//        $this->sessions->remove(self::SESSION_KEY);
-//        $this->sendAdminOrderMesage($order);
-//    }
-//
-//    private function sendAdminOrderMesage(Order $order)
-//    {
-//        $message = new TemplatedEmail();
-//        $message->to(new Address($this->parametrs->get('orderAdminEmail')));
-//        $message->from('noreply@shop.com');
-//        $message->subject('Yовый заказ на сайте');
-//        $message->htmlTemplate('order/emails/admin.html.twig');
-//        $message->context(['order' => $order]);
-//        $this->mailer->send($message);
-//
-//    }
+
 
 
 

@@ -45,7 +45,7 @@ class UserGenarate
         for($i=0; $i<=$num; $i++)
         { $user = new Users();
             $user->setName($this->name[mt_rand(0, count($this->name) - 1)]);
-            $user->setBirthDay(new \DateTimeImmutable(date("Y-m-d",  mktime(0, 0, 0, (12-mt_rand(1,10)),(30-mt_rand(2,10)),(2021-mt_rand(18,40))))));
+            $user->setBirthDay(new \DateTime(date("Y-m-d",  mktime(0, 0, 0, (12-mt_rand(1,10)),(30-mt_rand(2,10)),(2021-mt_rand(18,40))))));
             $k=mt_rand(1,3);
             $index=0;
 
@@ -62,7 +62,7 @@ class UserGenarate
             }
 
         }
-        $this->entityManager->flush();
+
 
     }
 

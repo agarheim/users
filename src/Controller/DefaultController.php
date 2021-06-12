@@ -9,8 +9,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController  extends AbstractController
 {
@@ -49,5 +50,27 @@ class DefaultController  extends AbstractController
     {
       //  var_dump($this->userService->getUser($id));
         return new JsonResponse($this->userService->getUserById($id));
+    }
+
+    /**
+     * @Route ("/adduser/", name="addUser")
+     * @return Response
+     * @throws \Exception
+     */
+    public function addUsers()
+    {
+        $user = new \stdClass();
+        $phone1 = new \stdClass();
+        $phone2 = new \stdClass();
+        $user->name = 'Anatoliy';
+        $user->date = '15-06-2000';
+        $phone1->phoneNumber = '+380632001223';
+        $phone1->balance = 100.20;
+        $phone2->phoneNumber = '+380501001014';
+        $phone2->balance = 90.20;
+        $user->phones = [$phone1,$phone2];
+
+        //  var_dump($this->userService->getUser($id));
+        return new JsonResponse($this->userService->addUser($user));
     }
 }
