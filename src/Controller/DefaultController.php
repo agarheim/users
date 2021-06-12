@@ -4,26 +4,24 @@ declare(strict_types=1);
 
 namespace App\Controller;
 use App\Helper\UserGenarate;
-use Doctrine\DBAL\Types\DateImmutableType;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use function Ramsey\Uuid\v1;
+
 
 class DefaultController  extends AbstractController
 {
     /**
-     * @var EntityManagerInterface
+     * @var UserService
      */
-    private  $entityManager;
-    /**
-     * @var mixed
-     */
+     private $userService;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct( UserService $userService)
     {
-        $this->entityManager = $entityManager;
+         $this->userService = $userService;
     }
        public  $codeCountry = ['380',];
 
@@ -37,13 +35,19 @@ class DefaultController  extends AbstractController
 //        $birhtday =mktime(0, 0, 0, );
 //var_dump((12-rand(1,10)).'-'.(30-rand(2,10)).'-'.(2021-rand(18,40)));
 
-        $u = new UserGenarate($this->entityManager );
-         $u->generateUser(2000);
+//        $u = new UserGenarate($this->entityManager );
+//         $u->generateUser(2000);
         return $this->render('app/home.html.twig');
     }
 
-    public function generateUsers()
+    /**
+     * @Route ("/user/{id}", name="getuser")
+     * @return Response
+     * @throws \Exception
+     */
+    public function getUsersById($id)
     {
-        
+      //  var_dump($this->userService->getUser($id));
+        return new JsonResponse($this->userService->getUserById($id));
     }
 }

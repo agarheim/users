@@ -62,12 +62,12 @@ class Users
 * @var DateTimeImmutable
  *
  */
-    public function getBirthDay(): ?\DateTimeImmutable
+    public function getBirthDay(): ?\DateTime
     {
         return $this->birthDay;
     }
 
-    public function setBirthDay(?\DateTimeImmutable $birthDay): self
+    public function setBirthDay(?\DateTime $birthDay): self
     {
         $this->birthDay = $birthDay;
 
